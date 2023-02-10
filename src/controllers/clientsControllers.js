@@ -47,7 +47,7 @@ const putClient = async(req, res) => {
       cpf = '${ cpf }', 
       birthday = '${ birthday }'
       WHERE id = $1`, [id])
-    res.send() 
+    res.sendStatus(200) 
   }
   catch(error){
     res.status(500).send(error.message)
