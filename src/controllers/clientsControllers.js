@@ -36,9 +36,28 @@ catch(error){
 }
 }
 
+const putClient = async(req, res) => {
+  const { name, phone, cpf, birthday } = req.body
+  const { id } = req.params
+  try{
+    const customers = await db.query(
+      `UPDATE customers
+      SET name = '${ name }', 
+      phone = '${ phone }', 
+      cpf = '${ cpf }', 
+      birthday = '${ birthday }'
+      WHERE id = $1`, [id])
+    res.sendStatus(200) 
+  }
+  catch(error){
+    res.status(500).send(error.message)
+  }
+  }
+
 
 export {
   getClients,
   getClientsById,
-  postClients
+  postClients,
+  putClient
 }
