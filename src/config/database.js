@@ -3,11 +3,11 @@ import dotenv from "dotenv"
 
 dotenv.config()
 
-const { Poll } = pg
+const { Pool } = pg
 const configDataBase = {
   connectionString: process.env.DATABASE_URL,
 }
 if (process.env.MODE == "prod") configDataBase.ssl = true
-const db = new Poll(configDataBase)
+const db = new Pool(configDataBase)
 
 export default db
