@@ -5,8 +5,8 @@ const gamesValidation = async(req, res, next) => {
   try{
     const validation = gamesSchema.validate(req.body)
     if(validation.error) return res.sendStatus(400)
-    const games = (await db.query('SELECT * FROM games')).rows
-    if(games.includes(req.body.name)) return res.sendStatus(409)
+    const games = await db.query(`SELECT * FROM games where name = '${req.body.name}'` )
+    if(games) return res.sendStatus(409)
     next()
   }
   catch(error){

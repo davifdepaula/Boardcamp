@@ -24,7 +24,6 @@ const postGames = async(req, res) => {
   }
 }
 
-
 export {
   getGames,
   postGames
