@@ -6,7 +6,7 @@ const rentalsValidation = async(req, res, next) => {
     const validation = rentalSchema.validate(req.body)
     if(validation.error) return res.sendStatus(400)
     const client = await db.query(`SELECT * FROM customers 
-    where id = $1`, [req.body.costumerId])
+    where id = $1`, [req.body.customerId])
     if(!client) return res.sendStatus(400)
     const game = await db.query(`SELECT * FROM games 
     where id = $1`, [req.body.gameId])
