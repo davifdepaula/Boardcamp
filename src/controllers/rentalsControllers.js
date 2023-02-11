@@ -3,8 +3,23 @@ import dayjs from "dayjs"
 
 const getRentals = async(req, res) => {
   try{
-    const rentals = (await db.query('SELECT * FROM rentals')).rows
-    return res.send(rentals)
+    const rentals = (await db.query(`SELECT "rentals".*, 
+    "customers".id as "customersId", "customers"."name" as "customersName", 
+    "games".id as "gameIdfromTableId", "games"."name" as "gameName"
+    FROM rentals join  customers
+      on "customerId" = "customers".id
+    join games 
+      on 
+    "gameId" = "games".id
+    `)).rows
+    const rentalsCustomersGames = rentals.map(item => {
+        return { id: item.id, costumerId: item.customerId, gameId: item.gameId,
+          rentDate: item.rentDate, daysRented: item.daysRented, returnDate: item.returnDate,
+          originalPrice: item.originalPrice, delayFee: item.delayFee, 
+          customer: { id: item.customerId, name: item.customersName },
+          game: { id: item.gameId, name: item.gameName }}
+    })
+    return res.send(rentalsCustomersGames)
   }
   catch(error){
     return res.status(500).send(error.message)
@@ -30,12 +45,7 @@ const postRentals = async(req, res) => {
     '${rentDate}', ${returnDate}, ${originalPrice}, 
     ${delayFee})
     `)
-
-    let stockTotal = await db.query('SELECT "stockTotal" FROM games where id=$1', [gameId])
-    stockTotal = stockTotal.rows[0].stockTotal
-    stockTotal -= 1
-    await db.query('UPDATE games SET "stockTotal" = $1 WHERE id = $2', [stockTotal, gameId])
-    
+   
     return res.sendStatus(201)
   }catch(error){
     return res.status(500).send(error.message)
