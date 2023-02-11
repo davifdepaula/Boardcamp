@@ -9,11 +9,11 @@ const getRentals = async(req, res) => {
     FROM rentals join  customers
       on "customerId" = "customers".id
     join games 
-      on 
+      on      
     "gameId" = "games".id
     `)).rows
     const rentalsCustomersGames = rentals.map(item => {
-        return { id: item.id, costumerId: item.customerId, gameId: item.gameId,
+        return { id: item.id, customerId: item.customerId, gameId: item.gameId,
           rentDate: item.rentDate, daysRented: item.daysRented, returnDate: item.returnDate,
           originalPrice: item.originalPrice, delayFee: item.delayFee, 
           customer: { id: item.customerId, name: item.customersName },
