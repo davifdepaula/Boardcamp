@@ -30,7 +30,31 @@ const checkRentals = async(req, res, next) => {
   }
 }
 
+const checkFinalizeRental = async(req, res, next) => {
+  try {
+    const game =  (await db.query(`SELECT * FROM rentals
+    WHERE id = ${req.params.id}`)).rows
+    if(game.length === 0) return res.sendStatus(404)
+    next()
+  } catch (error) {
+    return res.status(500).send(error.message)
+    
+  }
+}
+const checkIsItWasReturned = async(req, res, next)=>{
+  try {
+    const returnDate =  (await db.query(`SELECT * FROM rentals
+    WHERE id = ${req.params.id}`)).rows[0].returnDate
+    if(returnDate) return res.sendStatus(400)
+    next()
+  } catch (error) {
+    return res.status(500).send(error.message)
+    
+  }
+}
 export{
   rentalsValidation,
-  checkRentals
+  checkRentals,
+  checkFinalizeRental,
+  checkIsItWasReturned
 }

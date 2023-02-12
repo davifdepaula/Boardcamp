@@ -38,7 +38,7 @@ const postRentals = async(req, res) => {
     ("customerId", "gameId", "daysRented", 
     "rentDate","returnDate", "originalPrice", 
     "delayFee")
-    values
+    valuess
     (${customerId}, ${gameId}, ${daysRented}, 
     '${rentDate}', ${returnDate}, ${originalPrice}, 
     ${delayFee})
@@ -50,7 +50,37 @@ const postRentals = async(req, res) => {
   }
 }
 
+const postFinalizeRent = async(req, res) => {
+  const {id} = req.params
+  try {
+    const rentalGame = (await db.query(`SELECT * FROM 
+      rentals WHERE id = ${id}`)).rows[0]
+
+    let pricePerDay = (await db.query(`SELECT * FROM 
+      games WHERE id = ${id}`)).rows[0]
+
+    pricePerDay = pricePerDay.pricePerDay
+    const returnDate = dayjs(Date.now()).format('YYYY-MM-DD')
+    const returnDay = returnDate.toString().slice(8,10)
+    const rentDay = rentalGame.rentDate.toString().slice(8,10)
+    let delayFee = Number(returnDay) - Number(rentDay)
+
+    if (delayFee > rentalGame.daysRented) delayFee = delayFee - rentalGame.daysRented
+    else delayFee = 0
+    delayFee = delayFee*pricePerDay
+
+    await db.query(`UPDATE rentals 
+    SET "returnDate" = '${returnDate}', "delayFee" = ${delayFee}`)
+
+    res.sendStatus(200)    
+  } catch (error) {
+    return res.status(500).send(error.message)
+    
+  }
+}
+
 export {
   getRentals, 
-  postRentals
+  postRentals,
+  postFinalizeRent
 }
