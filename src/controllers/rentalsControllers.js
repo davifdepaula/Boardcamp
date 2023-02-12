@@ -74,6 +74,16 @@ const postFinalizeRent = async(req, res) => {
 
     res.sendStatus(200)    
   } catch (error) {
+    return res.status(500).send(error.message)    
+  }
+}
+
+const deleteRentals = async(req, res) => {
+  try {
+    const {id} = req.params
+    await db.query(`DELETE FROM rentals WHERE id = ${id}`)
+    return res.sendStatus(200)
+  } catch (error) {
     return res.status(500).send(error.message)
     
   }
@@ -82,5 +92,6 @@ const postFinalizeRent = async(req, res) => {
 export {
   getRentals, 
   postRentals,
-  postFinalizeRent
+  postFinalizeRent,
+  deleteRentals
 }
