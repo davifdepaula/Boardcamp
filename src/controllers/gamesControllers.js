@@ -4,8 +4,8 @@ const getGames = async(req, res) => {
   try{
     let games
     const {name} = req.query
-    const nameCapitalize = name[0].toUpperCase() + name.substring(1) 
     if(name) {
+      const nameCapitalize = name[0].toUpperCase() + name.substring(1) 
       games = (await db.query(`SELECT * FROM games 
         WHERE name LIKE '${nameCapitalize}%'`)).rows
   }else{
