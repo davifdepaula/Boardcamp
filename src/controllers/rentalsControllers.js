@@ -3,8 +3,10 @@ import dayjs from "dayjs"
 
 const getRentals = async(req, res) => {
   try{
-    const {customerId, gameId} = req.query
+    let {customerId, gameId, limit, offset} = req.query
     let rentals
+    if(!offset) offset = null
+    if(!limit) limit = null
     if(customerId) {
       rentals = (await db.query(`SELECT "rentals".*, 
     "customers".id as "customersId", "customers"."name" as "customersName", 
@@ -15,7 +17,7 @@ const getRentals = async(req, res) => {
       on      
     "gameId" = "games".id
     WHERE "rentals"."customerId" = ${customerId}
-    `)).rows
+    limit ${limit} offset ${offset}`)).rows
     }
     else if(gameId){
       rentals = (await db.query(`SELECT "rentals".*, 
@@ -27,7 +29,7 @@ const getRentals = async(req, res) => {
       on      
     "gameId" = "games".id
     WHERE "rentals"."gameId" = ${gameId}
-    `)).rows
+    limit ${limit} offset ${offset}`)).rows
     console.log(rentals)
     }
     else{
@@ -39,7 +41,7 @@ const getRentals = async(req, res) => {
     join games 
       on      
     "gameId" = "games".id
-    `)).rows
+    limit ${limit} offset ${offset}`)).rows
     }
     const rentalsCustomersGames = rentals.map(item => {
         return { id: item.id, customerId: item.customerId, gameId: item.gameId,

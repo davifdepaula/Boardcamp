@@ -3,13 +3,16 @@ import db from "../config/database.js";
 const getGames = async(req, res) => {
   try{
     let games
-    const {name} = req.query
+    let {name, limit, offset} = req.query
+    if(!offset) offset = null
+    if(!limit) limit = null 
     if(name) {
       const nameCapitalize = name[0].toUpperCase() + name.substring(1) 
       games = (await db.query(`SELECT * FROM games 
-        WHERE name LIKE '${nameCapitalize}%'`)).rows
+        WHERE name LIKE '${nameCapitalize}%' limit ${limit} offset ${offset}`)).rows
   }else{
-      games = (await db.query("SELECT * FROM games")).rows
+      games = (await db.query(`SELECT * FROM games 
+        limit ${limit} offset ${offset}`)).rows
   }
     res.send(games)
   }catch(error){
