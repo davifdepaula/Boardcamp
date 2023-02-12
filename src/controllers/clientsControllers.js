@@ -15,7 +15,6 @@ const getClientsById = async(req, res) => {
     const clients = (await db.query(`SELECT * FROM customers where id = $1`, [id]))
     if(clients.rows.length > 0) return res.send(clients.rows[0])
     else return res.sendStatus(404)
-    return res.send(clients)
   } catch (error) {
     res.status(500).send(error.message)    
   }
