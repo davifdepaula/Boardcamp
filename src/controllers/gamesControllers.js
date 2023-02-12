@@ -2,10 +2,18 @@ import db from "../config/database.js";
 
 const getGames = async(req, res) => {
   try{
-    const games = await db.query("SELECT * FROM games;")
-    res.send(games.rows)
-  }catch{
-    res.sendStatus(500)
+    let games
+    const {name} = req.query
+    const nameCapitalize = name[0].toUpperCase() + name.substring(1) 
+    if(name) {
+      games = (await db.query(`SELECT * FROM games 
+        WHERE name LIKE '${nameCapitalize}%'`)).rows
+  }else{
+      games = (await db.query("SELECT * FROM games")).rows
+  }
+    res.send(games)
+  }catch(error){
+    res.status(500).send(error.message)
   }
 }
 

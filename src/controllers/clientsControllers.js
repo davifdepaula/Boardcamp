@@ -2,7 +2,14 @@ import db from "../config/database.js"
 
 const getClients = async(req, res) => {
   try {
-    const clients = (await db.query("SELECT * FROM customers")).rows
+    let clients
+    const {cpf} = req.query
+    if (cpf) {
+      clients = (await db.query(`SELECT * FROM customers  
+      WHERE cpf LIKE '${cpf}%'`)).rows
+    }else{
+      clients = (await db.query(`SELECT * FROM customers`)).rows
+    }
     return res.send(clients)
   } catch (error) {
     res.status(500).send(error.message)    
