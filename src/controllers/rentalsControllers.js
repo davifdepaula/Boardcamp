@@ -3,7 +3,35 @@ import dayjs from "dayjs"
 
 const getRentals = async(req, res) => {
   try{
-    const rentals = (await db.query(`SELECT "rentals".*, 
+    const {customerId, gameId} = req.query
+    let rentals
+    if(customerId) {
+      rentals = (await db.query(`SELECT "rentals".*, 
+    "customers".id as "customersId", "customers"."name" as "customersName", 
+    "games".id as "gameIdfromTableId", "games"."name" as "gameName"
+    FROM rentals join  customers 
+      on "customerId" = "customers".id
+    join games 
+      on      
+    "gameId" = "games".id
+    WHERE "rentals"."customerId" = ${customerId}
+    `)).rows
+    }
+    else if(gameId){
+      rentals = (await db.query(`SELECT "rentals".*, 
+    "customers".id as "customersId", "customers"."name" as "customersName", 
+    "games".id as "gameIdfromTableId", "games"."name" as "gameName"
+    FROM rentals join  customers 
+      on "customerId" = "customers".id
+    join games 
+      on      
+    "gameId" = "games".id
+    WHERE "rentals"."gameId" = ${gameId}
+    `)).rows
+    console.log(rentals)
+    }
+    else{
+      rentals = (await db.query(`SELECT "rentals".*, 
     "customers".id as "customersId", "customers"."name" as "customersName", 
     "games".id as "gameIdfromTableId", "games"."name" as "gameName"
     FROM rentals join  customers
@@ -12,6 +40,7 @@ const getRentals = async(req, res) => {
       on      
     "gameId" = "games".id
     `)).rows
+    }
     const rentalsCustomersGames = rentals.map(item => {
         return { id: item.id, customerId: item.customerId, gameId: item.gameId,
           rentDate: item.rentDate, daysRented: item.daysRented, returnDate: item.returnDate,
