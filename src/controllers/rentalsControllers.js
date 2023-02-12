@@ -38,7 +38,7 @@ const postRentals = async(req, res) => {
     ("customerId", "gameId", "daysRented", 
     "rentDate","returnDate", "originalPrice", 
     "delayFee")
-    valuess
+    values
     (${customerId}, ${gameId}, ${daysRented}, 
     '${rentDate}', ${returnDate}, ${originalPrice}, 
     ${delayFee})
