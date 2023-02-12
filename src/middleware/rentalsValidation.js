@@ -55,7 +55,7 @@ const deleteValidation = async(req, res, next) => {
   try{
     const rental = (await db.query(`SELECT * FROM rentals
     WHERE id = ${req.params.id}`)).rows[0]
-    if(rental.length ===0) return res.sendStatus(404)
+    if(!rental) return res.sendStatus(404)
     if(!rental.returnDate) return res.sendStatus(400)
     next()
   }catch(error){
