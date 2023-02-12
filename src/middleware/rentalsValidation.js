@@ -23,7 +23,7 @@ const checkRentals = async(req, res, next) => {
     WHERE id = ${req.body.gameId}`)).rows.length
     const stockTotal = (await db.query(`SELECT * FROM games
     WHERE id = ${req.body.gameId}`)).rows[0].stockTotal
-    if(rentalsQuantity > stockTotal || stockTotal === 0) return res.sendStatus(400)
+    if(rentalsQuantity >= stockTotal || stockTotal === 0) return res.sendStatus(400)
     next()    
   } catch (error) {
     return res.status(500).send(error.message)    
