@@ -33,9 +33,7 @@ const postRentals = async(req, res) => {
   try{
     let pricePerDay = (await db.query('SELECT "pricePerDay" FROM games where id = $1', [gameId]))
     pricePerDay = pricePerDay.rows[0].pricePerDay
-
     const originalPrice = daysRented*(pricePerDay)
-
     await db.query(`INSERT INTO rentals 
     ("customerId", "gameId", "daysRented", 
     "rentDate","returnDate", "originalPrice", 
@@ -44,8 +42,7 @@ const postRentals = async(req, res) => {
     (${customerId}, ${gameId}, ${daysRented}, 
     '${rentDate}', ${returnDate}, ${originalPrice}, 
     ${delayFee})
-    `)
-   
+    `)   
     return res.sendStatus(201)
   }catch(error){
     return res.status(500).send(error.message)

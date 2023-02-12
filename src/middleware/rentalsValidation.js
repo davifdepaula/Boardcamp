@@ -11,13 +11,26 @@ const rentalsValidation = async(req, res, next) => {
     const game = await db.query(`SELECT * FROM games 
     where id = $1`, [req.body.gameId])
     if(!game) return res.sendStatus(400)
-    if(game.rows[0].stockTotal > 0) next()
-    else return res.sendStatus(400)
+    next()
   }catch(error){
     return res.status(500).send(error.message)
   }
 }
 
+const checkRentals = async(req, res, next) => {
+  try {
+    const rentalsQuantity = (await db.query(`SELECT * FROM rentals
+    WHERE id = ${req.body.gameId}`)).rows.length
+    const stockTotal = (await db.query(`SELECT * FROM games
+    WHERE id = ${req.body.gameId}`)).rows[0].stockTotal
+    if(rentalsQuantity > stockTotal || stockTotal === 0) return res.sendStatus(400)
+    next()    
+  } catch (error) {
+    return res.status(500).send(error.message)    
+  }
+}
+
 export{
-  rentalsValidation
+  rentalsValidation,
+  checkRentals
 }
