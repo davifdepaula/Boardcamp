@@ -7,6 +7,8 @@ const getRentals = async(req, res) => {
     let rentals
     if(!offset) offset = null
     if(!limit) limit = null
+    if(!order) order = 'id'
+    if(!desc) desc = false
     if(customerId) {
       rentals = (await db.query(`SELECT "rentals".*, 
     "customers".id as "customersId", "customers"."name" as "customersName", 
@@ -17,7 +19,7 @@ const getRentals = async(req, res) => {
       on      
     "gameId" = "games".id
     WHERE "rentals"."customerId" = ${customerId}
-    limit ${limit} offset ${offset}`)).rows
+    ORDER BY ${order} desc limit ${limit} offset ${offset}`)).rows
     }
     else if(gameId){
       rentals = (await db.query(`SELECT "rentals".*, 
@@ -29,8 +31,19 @@ const getRentals = async(req, res) => {
       on      
     "gameId" = "games".id
     WHERE "rentals"."gameId" = ${gameId}
-    limit ${limit} offset ${offset}`)).rows
-    console.log(rentals)
+    ORDER BY ${order} desc limit ${limit} offset ${offset}`)).rows
+    }
+    else if(gameId && customerId ){
+      rentals = (await db.query(`SELECT "rentals".*, 
+    "customers".id as "customersId", "customers"."name" as "customersName", 
+    "games".id as "gameIdfromTableId", "games"."name" as "gameName"
+    FROM rentals join  customers 
+      on "customerId" = "customers".id
+    join games 
+      on      
+    "gameId" = "games".id
+    "rentals"."customerId" = ${customerId} AND "rentals"."gameId" = ${gameId}
+    ORDER BY ${order} desc limit ${limit} offset ${offset}`)).rows
     }
     else{
       rentals = (await db.query(`SELECT "rentals".*, 
@@ -41,7 +54,7 @@ const getRentals = async(req, res) => {
     join games 
       on      
     "gameId" = "games".id
-    limit ${limit} offset ${offset}`)).rows
+    ORDER BY ${order} desc limit ${limit} offset ${offset}`)).rows
     }
     const rentalsCustomersGames = rentals.map(item => {
         return { id: item.id, customerId: item.customerId, gameId: item.gameId,

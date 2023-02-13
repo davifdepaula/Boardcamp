@@ -3,16 +3,18 @@ import db from "../config/database.js"
 const getClients = async(req, res) => {
   try {
     let clients
-    let  {cpf, limit, offset} = req.query
+    let  {cpf, limit, offset, order, desc} = req.query
     if(!offset) offset = null
     if(!limit) limit = null
+    if(!order) order = 'id'
+    if(!desc) desc = false
     if (cpf) {
       clients = (await db.query(`SELECT * FROM customers  
       WHERE cpf LIKE '${cpf}%'
-      limit ${limit} offset ${offset}`)).rows
+      ORDER BY ${order} limit ${limit} offset ${offset}`)).rows
     }else{
       clients = (await db.query(`SELECT * FROM customers
-      limit ${limit} offset ${offset}`)).rows
+      ORDER BY ${order} desc limit ${limit} offset ${offset}`)).rows
     }
     return res.send(clients)
   } catch (error) {

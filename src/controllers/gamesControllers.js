@@ -6,13 +6,15 @@ const getGames = async(req, res) => {
     let {name, limit, offset} = req.query
     if(!offset) offset = null
     if(!limit) limit = null 
+    if(!order) order = 'id'
     if(name) {
       const nameCapitalize = name[0].toUpperCase() + name.substring(1) 
       games = (await db.query(`SELECT * FROM games 
-        WHERE name LIKE '${nameCapitalize}%' limit ${limit} offset ${offset}`)).rows
+        WHERE name LIKE '${nameCapitalize}%' 
+        ORDER BY ${order} desc limit ${limit} offset ${offset}`)).rows
   }else{
       games = (await db.query(`SELECT * FROM games 
-        limit ${limit} offset ${offset}`)).rows
+      ORDER BY ${order} desc limit ${limit} offset ${offset}`)).rows
   }
     res.send(games)
   }catch(error){
