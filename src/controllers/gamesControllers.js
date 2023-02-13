@@ -3,10 +3,11 @@ import db from "../config/database.js";
 const getGames = async(req, res) => {
   try{
     let games
-    let {name, limit, offset} = req.query
+    let {name, limit, offset, order, desc} = req.query
     if(!offset) offset = null
     if(!limit) limit = null 
     if(!order) order = 'id'
+    if(!desc) desc = false
     if(name) {
       const nameCapitalize = name[0].toUpperCase() + name.substring(1) 
       games = (await db.query(`SELECT * FROM games 

@@ -3,7 +3,7 @@ import dayjs from "dayjs"
 
 const getRentals = async(req, res) => {
   try{
-    let {customerId, gameId, limit, offset} = req.query
+    let {customerId, gameId, limit, offset, order, desc} = req.query
     let rentals
     if(!offset) offset = null
     if(!limit) limit = null
