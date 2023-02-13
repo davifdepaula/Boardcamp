@@ -7,14 +7,15 @@ const getClients = async(req, res) => {
     if(!offset) offset = null
     if(!limit) limit = null
     if(!order) order = 'id'
-    if(!desc) desc = false
+    if(!desc) desc = 'asc' 
+    else desc = 'desc'
     if (cpf) {
       clients = (await db.query(`SELECT * FROM customers  
       WHERE cpf LIKE '${cpf}%'
-      ORDER BY ${order} limit ${limit} offset ${offset}`)).rows
+      ORDER BY ${order} ${desc} limit ${limit} offset ${offset}`)).rows
     }else{
       clients = (await db.query(`SELECT * FROM customers
-      ORDER BY ${order} desc limit ${limit} offset ${offset}`)).rows
+      ORDER BY ${order} ${desc} limit ${limit} offset ${offset}`)).rows
     }
     return res.send(clients)
   } catch (error) {
